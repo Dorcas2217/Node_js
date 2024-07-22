@@ -1,0 +1,43 @@
+### Read all pizzas with File variable
+@baseUrl = http://localhost:3000
+GET {{baseUrl}}/pizzas
+
+### Read all pizzas sorted by title (ascending)
+GET {{baseUrl}}/pizzas/?order=+title
+
+### Read all pizzas sorted by title (descending)
+GET {{baseUrl}}/pizzas/?order=-title
+
+### GET a pizzas by is index 
+GET {{baseUrl}}/pizzas/-
+
+### Create a pizza
+POST {{baseUrl}}/pizzas
+Content-Type: application/json
+
+{
+    "title":"Magic Green",
+    "content":"Epinards, Brocolis, Olives vertes, Basilic"
+}
+
+### Delete pizza identified by 2
+DELETE {{baseUrl}}/pizzas/2
+
+### Update the pizza identified by 6
+PATCH {{baseUrl}}/pizzas/2
+Content-Type: application/json
+
+{
+    "title":"Magic Green 2"
+}
+
+### Update the pizza identified by 6
+PUT {{baseUrl}}/pizzas/-2
+Content-Type: application/json
+
+{   
+    "title":"Magic Green kk",
+    "content":"Epinards, Brocolis, Olives vertes, Cad "
+}
+
+
