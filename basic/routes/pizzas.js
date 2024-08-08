@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-
+const { serialize, parse } = require('../utils/json');
+const jsonDbPath = __dirname + '/../data/pizzas.json';
 const MENU = [
   {
     id: 1,
@@ -37,13 +38,14 @@ router.get('/', (req, res, next) => {
   const order = req?.query?.order?.includes('title')? req.query.order : undefined
 
   let menuOrder
+  const menu = parse(jsonDbPath, MENU)
   if(order) 
-    menuOrder = [...MENU].sort((a,b) => a.title.localeCompare(b.title));
+    menuOrder = [...menu].sort((a,b) => a.title.localeCompare(b.title));
 
   if(order == '-title')
     menuOrder.reverse();
   
-  res.json( menuOrder ?? MENU);
+  res.json( menuOrder ?? menu);
 });
 
 router.get('/:id', (req, res, next) => {
@@ -51,7 +53,8 @@ router.get('/:id', (req, res, next) => {
   if(!id)
     return res.sendStatus(400)
 
-  const pizzas = MENU.find(p => p.id == id)
+  const menu = parse(jsonDbPath, MENU)
+  const pizzas = menu.find(p => p.id == id)
   if(!pizzas)
     return res.sendStatus(404)
 
@@ -67,9 +70,9 @@ router.post('/', (req, res) => {
   console.log('POST /pizzas');
 
   if (!title || !content) return res.sendStatus(400); // error code '400 Bad request'
-
-  const lastItemIndex = MENU.length ? MENU.length - 1 : undefined;
-  const lastId = lastItemIndex !== undefined ? MENU[lastItemIndex]?.id : 0;
+  const menu = parse(jsonDbPath, MENU);
+  const lastItemIndex = menu.length ? menu.length - 1 : undefined;
+  const lastId = lastItemIndex !== undefined ? menu[lastItemIndex]?.id : 0;
   const nextId = lastId + 1;
 
   const newPizza = {
@@ -78,7 +81,9 @@ router.post('/', (req, res) => {
     content: content,
   };
 
-  MENU.push(newPizza);
+  menu.push(newPizza);
+
+  serialize(jsonDbPath, menu);
 
   res.json(newPizza);
 });
@@ -90,12 +95,13 @@ router.delete('/:id', (req, res) => {
   if(!id ) 
     return res.sendStatus(400);
 
-  const foundIndex = MENU.findIndex(pizza => pizza.id == id);
+  const menu = parse(jsonDbPath, MENU);
+  const foundIndex = menu.findIndex(pizza => pizza.id == id);
 
   if (foundIndex < 0)
     return res.sendStatus(404);
 
-  const itemsRemovedFromMenu = MENU.splice(foundIndex, 1);
+  const itemsRemovedFromMenu = menu.splice(foundIndex, 1);
   const itemRemoved = itemsRemovedFromMenu[0];
 
   res.json(itemRemoved);
@@ -112,7 +118,8 @@ router.put('/:id', (req, res) => {
 
   if (!title || !content) return res.send(400).send('all the property of the request must be fill correctly (title and content)');
 
-  const foundIndex = MENU.findIndex(pizza => pizza.id == id);
+  const menu = parse(jsonDbPath, MENU);
+  const foundIndex = menu.findIndex(pizza => pizza.id == id);
 
   if (foundIndex < 0) {
     const newPizza = {
@@ -121,13 +128,16 @@ router.put('/:id', (req, res) => {
       content: content,
     };
   
-    MENU.push(newPizza);
+    menu.push(newPizza);
+    serialize(jsonDbPath, menu);
+
     return res.json(newPizza);
   }
 
-  const updatedPizza = {...MENU[foundIndex], ...req.body};
+  const updatedPizza = {...menu[foundIndex], ...req.body};
 
-  MENU[foundIndex] = updatedPizza;
+  menu[foundIndex] = updatedPizza;
+  serialize(jsonDbPath, menu);
 
   res.json(updatedPizza);
 });
@@ -143,13 +153,15 @@ router.patch('/:id', (req, res) => {
 
   if ((!title && !content) || title?.length === 0 || content?.length === 0) return res.sendStatus(400);
 
-  const foundIndex = MENU.findIndex(pizza => pizza.id == req.params.id);
+  const menu = parse(jsonDbPath, MENU);
+
+  const foundIndex = menu.findIndex(pizza => pizza.id == req.params.id);
 
   if (foundIndex < 0) return res.sendStatus(404);
 
-  const updatedPizza = {...MENU[foundIndex], ...req.body};
+  const updatedPizza = {...menu[foundIndex], ...req.body};
 
-  MENU[foundIndex] = updatedPizza;
+  menu[foundIndex] = updatedPizza;
 
   res.json(updatedPizza);
 });
