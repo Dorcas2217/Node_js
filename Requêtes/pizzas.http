@@ -9,7 +9,7 @@ GET {{baseUrl}}/pizzas/?order=+title
 GET {{baseUrl}}/pizzas/?order=-title
 
 ### GET a pizzas by is index 
-GET {{baseUrl}}/pizzas/-
+GET {{baseUrl}}/pizzas/5
 
 ### Create a pizza
 POST {{baseUrl}}/pizzas
@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 ### Update the pizza identified by 6
-PUT {{baseUrl}}/pizzas/-2
+PUT {{baseUrl}}/pizzas/2
 Content-Type: application/json
 
 {   

@@ -14,17 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var counter = 0
-app.use((req,res,next) => {
-    counter += 1
-    if(req.url == 'GET'){
-        console.log("GET Counter : ", counter);
-    }
-    else if(req.url == '/pizzas'){
-        console.log("GET Counter : ", counter);
-    }
-    next();
-})
+
 app.use('/pizzas', pizzaRouter);
 app.use('/users', usersRouter);
 
