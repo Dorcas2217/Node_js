@@ -1,33 +1,28 @@
-const Menu = [
-    {
-      id: 1,
-      title: '4 fromages',
-      content: 'Gruyère, Sérac, Appenzel, Gorgonzola, Tomates',
-    },
-    {
-      id: 2,
-      title: 'Vegan',
-      content: 'Tomates, Courgettes, Oignons, Aubergines, Poivrons',
-    },
-    {
-      id: 3,
-      title: 'Vegetarian',
-      content: 'Mozarella, Tomates, Oignons, Poivrons, Champignons, Olives',
-    },
-    {
-      id: 4,
-      title: 'Alpage',
-      content: 'Gruyère, Mozarella, Lardons, Tomates',
-    },
-    {
-      id: 5,
-      title: 'Diable',
-      content: 'Tomates, Mozarella, Chorizo piquant, Jalapenos',
-    },
-  ];
+const readAllMenu = async () => {
+    try {
+        const response = await fetch('/api/pizzas');
+        if (!response.ok) throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
 
-const readAllMenu = () => Menu;
+        
+        return response.json(); // Retourne les données une fois qu'elles sont prêtes
+    } catch (error) {
+        console.error(error);
+        return []; // Retourne un tableau vide en cas d'erreur
+    }
+};
 
-const addOneMenu = (menu) => Menu.push(menu);
+
+const addOneMenu = (menu) => {
+    fetch('/api/pizzas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(menu)
+    }).then((response) => {
+        if (!response.ok) throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
+        return response.json();
+    })
+};
 
 export { readAllMenu, addOneMenu };

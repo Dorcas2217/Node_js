@@ -1,10 +1,10 @@
 import { clearPage } from '../../utils/render';
 import { readAllMenu } from '../../models/pizzas';
 
-const HomePage = () => {
+const HomePage = async () => {
   clearPage();
   const main = document.querySelector('main');
-  const Menu = readAllMenu();
+  const Menu = await readAllMenu();
   
   const accordion = document.createElement('div');
   accordion.classList.add('accordion', 'my-3');
