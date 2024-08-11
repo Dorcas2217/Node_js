@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:3000
+
+### Create a place
+POST {{baseUrl}}/places
+Content-Type: application/json
+
+{
+   "name": "lille", 
+   "description": " super super  !"
+}
+
+### Create a user
+
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+   "name": "jean", 
+   "email": "jean@example.com"
+}
+
+
+### Like a place
+PUT {{baseUrl}}/places/fav
+Content-Type: application/json
+
+{
+   "userId": 7,
+   "placeId": 1
+}
